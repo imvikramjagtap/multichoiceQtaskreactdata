@@ -215,7 +215,7 @@ function App() {
   const [ansResultWrong, setAnsResultWrong] = useState(false);
   const [displayNextQ, setDisplayNextQ] = useState(false);
   const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(true)
+  const [showResult, setShowResult] = useState(false)
 
   const submitHandler =(e)=>{
     e.preventDefault();

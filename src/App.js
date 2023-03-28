@@ -1,8 +1,14 @@
 import "./App.css";
-
 import React, { useState } from "react";
+import { withLDProvider } from 'launchdarkly-react-client-sdk';
+import { useFlags } from "launchdarkly-react-client-sdk";
+
 
 function App() {
+
+  // Taking the flag from launch darkly
+  const {triButton} = useFlags();
+
   const data = [
     {
       category: "Entertainment  Video Games",
@@ -194,20 +200,6 @@ function App() {
     },
   ];
 
-  // const hardQ = data.filter((har)=>{
-  //   return har.difficulty === "hard"
-  // });
-
-  // const mediumQ = data.filter((med)=>{
-  //   return med.difficulty === "medium"
-  // })
-
-  // const easyQ = data.filter((eas)=>{
-  //   return eas.difficulty === "easy"
-  // })
-
-  //Functions
-
   const [qNum, setQnum]= useState(1)
   const displayQ = data[qNum - 1];
   const [progressBar, setProgressBar] = useState(5);
@@ -266,17 +258,20 @@ function App() {
         <div className="progress">
           <div  className="progress-bar" role="progressbar" style={{width: `${progressBar}%`}} aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
-          <h2 className="text-start mt-2 ">Question {qNum} of {data.length}</h2>
+
+        <h2 className="text-start mt-2 ">Question {qNum} of {data.length}</h2>
           <p className="text-start mb-0">Category: {displayQ.category}</p>
           <p className="mt-0 p-0">{displayQ.difficulty === "easy" ? <span> ★ ☆ ☆</span> : null || displayQ.difficulty === "medium" ? <span> ★  ★ ☆</span> : <span> ★  ★  ★ </span>}</p>
           <h4 className="p-2">{displayQ.question}</h4>
           <div className="text-center">
-            <div className="d-flex justify-content-around flex-wrap p-2 mt-2">
+
+            {/* Added the flag here */}
+          {triButton && <div className="d-flex justify-content-around flex-wrap p-2 mt-2">
               <button className="btn btn-outline-dark m-2 w-100 px-5" onClick={CorrectAnswerHandler}>{displayQ.correct_answer}</button>
               {displayQ.incorrect_answers.map((ica) => (
                   <button key={ica.index} className="btn btn-outline-dark  m-2 px-5 w-100" onClick={wrongAnswerHandler}>{ica}</button>
               ))}
-            </div>
+            </div>}
           </div>
           <div className="text-center p-2">
             {ansResultRight && <h5 className="text-success">Correct!</h5>}
@@ -298,4 +293,7 @@ function App() {
   );
 }
 
-export default App;
+// Client id added here
+export default withLDProvider({
+  clientSideID: '64183019f54c7112e6622d5c',
+})(App);;
